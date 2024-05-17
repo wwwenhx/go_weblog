@@ -33,7 +33,7 @@ func GetUserSrv() *UserSrv {
 func (u *UserSrv) UserLogin(ctx context.Context, req *pb.UserReq) (*pb.UserRes, error) {
 	res := &pb.UserRes{}
 	res.Code = e.Success
-	user, err := dao.NewUserDao(ctx).FindUserByUserName(req.UserName)
+	user, err := dao.NewUserDao(ctx).FindUserByName(req.UserName)
 	if err != nil {
 		return res, err
 	}
@@ -57,7 +57,7 @@ func (u *UserSrv) UserRegister(ctx context.Context, req *pb.UserReq) (*pb.UserRe
 	res := &pb.UserRes{}
 	res.Code = e.Success
 
-	userByName, _ := dao.NewUserDao(ctx).FindUserByUserName(req.UserName)
+	userByName, _ := dao.NewUserDao(ctx).FindUserByName(req.UserName)
 	if userByName != nil {
 		if userByName.ID > 0 {
 			res.Code = e.Error
@@ -90,6 +90,48 @@ func (u *UserSrv) GetAllUser(ctx context.Context, req *pb.UserReq) (*pb.UserRes,
 		userModels = append(userModels, BuildUser(user))
 	}
 	res.UserList = userModels
+	return res, nil
+}
+
+func (u *UserSrv) ChangePassword(ctx context.Context, req *pb.UserReq) (*pb.UserRes, error) {
+	res := &pb.UserRes{}
+	res.Code = e.Success
+	user, err := dao.NewUserDao(ctx).FindUserById(req.Id)
+	if err != nil {
+		return res, err
+	}
+	if !user.CheckPassword(req.Password) {
+		res.Code = e.Error
+		return res, errors.New("验证密码错误")
+	}
+	result := dao.NewUserDao(ctx).ChangePassword(req.Id, req.Password)
+	if result.Error != nil {
+		res.Code = e.Error
+		return res, errors.New("更新失败")
+	}
+	user.Password = req.Password
+	res.UserDetail = BuildUser(user)
+	return res, nil
+}
+
+func (u *UserSrv) ChangeName(ctx context.Context, req *pb.UserReq) (*pb.UserRes, error) {
+	res := &pb.UserRes{}
+	res.Code = e.Success
+	user, err := dao.NewUserDao(ctx).FindUserById(req.Id)
+	if err != nil {
+		return res, err
+	}
+	if !user.CheckPassword(req.Password) {
+		res.Code = e.Error
+		return res, errors.New("验证密码错误")
+	}
+	result := dao.NewUserDao(ctx).ChangeName(req.Id, req.UserName)
+	if result.Error != nil {
+		res.Code = e.Error
+		return res, errors.New("更新失败")
+	}
+	user.UserName = req.UserName
+	res.UserDetail = BuildUser(user)
 	return res, nil
 }
 

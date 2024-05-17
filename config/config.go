@@ -18,6 +18,7 @@ var (
 	UserServiceAddress string
 	TaskServiceAddress string
 	GatewayAddress     string
+	MqAddress          string
 )
 
 func Init() {
@@ -28,6 +29,7 @@ func Init() {
 	LoadMySqlData(file)
 	LoadEtcdData(file)
 	LoadServiceAddr(file)
+	LoadMqAddr(file)
 }
 
 func LoadMySqlData(file *ini.File) {
@@ -49,4 +51,8 @@ func LoadServiceAddr(file *ini.File) {
 	UserServiceAddress = file.Section("server").Key("UserServiceAddress").String()
 	TaskServiceAddress = file.Section("server").Key("TaskServiceAddress").String()
 	GatewayAddress = file.Section("server").Key("GatewayAddress").String()
+}
+
+func LoadMqAddr(file *ini.File) {
+	MqAddress = file.Section("mq").Key("MqAddress").String()
 }

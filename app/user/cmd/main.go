@@ -4,12 +4,17 @@ import (
 	"fmt"
 	"gin_gomicro/app/user/etcd"
 	"gin_gomicro/app/user/grpc"
+	"gin_gomicro/app/user/mq"
 	"gin_gomicro/app/user/repository/db/dao"
 	"gin_gomicro/config"
 )
 
 func main() {
 	config.Init()
+	err := mq.InitMq()
+	if err != nil {
+		return
+	}
 	dao.Init()
 	//etcd注册
 	etcdClient, err := etcd.RegisterService("userService", config.UserServiceAddress)

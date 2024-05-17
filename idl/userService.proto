@@ -21,6 +21,8 @@ message UserReq {
   string user_name = 1;
   // @inject_tah: json:"password" form:"password"
   string password = 2;
+  // @inject_tah: json:"id" form:"id"
+  uint32 id = 3;
 }
 
 message UserRes {
@@ -35,4 +37,6 @@ service User{
   rpc UserLogin(UserReq)returns(UserRes);
   rpc UserRegister(UserReq)returns(UserRes);
   rpc GetAllUser(UserReq)returns(UserRes);
+  rpc ChangePassword(UserReq)returns(UserRes);
+  rpc ChangeName(UserReq)returns(UserRes);
 }

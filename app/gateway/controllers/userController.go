@@ -17,6 +17,7 @@ type UserController struct{}
 
 var rpc = grpc.GetRpc(etcd.GetServiceAddr("userService"))
 
+// 用户登录
 func (u *UserController) Login(c *gin.Context) {
 	response := &utils.Response{}
 	req := &pb.UserReq{}
@@ -39,6 +40,7 @@ func (u *UserController) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, response.ResponseSuccess(dataMap))
 }
 
+// 获取全部user
 func (u *UserController) GetAllUsers(c *gin.Context) {
 	response := utils.Response{}
 	rpc := grpc.GetRpc(config.UserServiceAddress)
@@ -53,6 +55,7 @@ func (u *UserController) GetAllUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, response.ResponseSuccess(user))
 }
 
+// 注册用户
 func (u *UserController) RegisterUser(c *gin.Context) {
 	response := utils.Response{}
 	req := &pb.UserReq{}
@@ -60,7 +63,6 @@ func (u *UserController) RegisterUser(c *gin.Context) {
 	if err := c.ShouldBindJSON(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
-	fmt.Println(rpc)
 	res, err := rpc.UserRegister(context.Background(), req)
 	if err != nil {
 		fmt.Println(err)
@@ -72,3 +74,23 @@ func (u *UserController) RegisterUser(c *gin.Context) {
 	response.Code = e.Success
 	c.JSON(http.StatusOK, response.ResponseSuccess(res))
 }
+
+// 修改密码
+func (u *UserController) UpdatePassword(c *gin.Context) {
+	response := utils.Response{}
+	req := &pb.UserReq{}
+	res := &pb.UserRes{}
+	if err := c.ShouldBindJSON(req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
+	res, err := rpc.ChangePassword(context.Background(), req)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if res.Code != e.Success {
+		c.JSON(http.StatusBadRequest, response.ResponseFail(err, ""))
+	}
+	c.JSON(http.StatusOK, response.ResponseSuccess(res))
+}
+
+// 修改账号
