@@ -10,7 +10,6 @@ import (
 )
 
 func GetServiceAddr(serviceName string) (addr string) {
-	fmt.Println("enter")
 	zapLogger, err := zap.NewProduction()
 	if err != nil {
 		fmt.Println("Error creating zap logger:", err)
@@ -18,22 +17,14 @@ func GetServiceAddr(serviceName string) (addr string) {
 	}
 
 	// 将 zap 日志记录器转换为 grpclog.LoggerV2 接口
-
-	etcdClient, err := clientv3.New(clientv3.Config{Endpoints: []string{config.EtcdHost + ":" + config.EtcdPort},
+	fmt.Println([]string{config.EtcdHost + ":" + config.EtcdPort})
+	etcdClient, err := clientv3.New(clientv3.Config{Endpoints: []string{"127.0.0.1:2379"},
 		Logger: zapLogger})
 	if err != nil {
 		fmt.Println(err)
 		fmt.Println("Error connect to etcd:", err)
 		return
 	}
-	fmt.Println("getServiceAddr")
-	fmt.Println(serviceName)
-	_, err = etcdClient.Put(context.Background(), "asd", "aqwe")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("mmm")
 	resp, err := etcdClient.Get(context.Background(), serviceName)
 	if err != nil {
 		fmt.Println("getServiceAddr err")

@@ -1,13 +1,14 @@
 package model
 
 import (
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"unique"`
+	UserName string `gorm:"unique"`
 	Password string `gorm:"not null"`
 }
 
@@ -19,14 +20,15 @@ func (u *User) SetPassword(password string) (err error) {
 		return
 	}
 	u.Password = string(bytes)
+	err1 := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+	if err1 != nil {
+		fmt.Println("bcrypt error")
+	}
+
 	return
 }
 
 func (u *User) CheckPassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
-	if err != nil {
-		return false
-	}
-	return true
-
+	return err == nil
 }

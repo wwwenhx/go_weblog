@@ -30,24 +30,25 @@ func GetUserSrv() *UserSrv {
 }
 
 // Login 登录模块
-func (u *UserSrv) UserLogin(ctx context.Context, req *pb.UserReq) (res *pb.UserRes, err error) {
+func (u *UserSrv) UserLogin(ctx context.Context, req *pb.UserReq) (*pb.UserRes, error) {
+	res := &pb.UserRes{}
 	res.Code = e.Success
 	user, err := dao.NewUserDao(ctx).FindUserByUserName(req.UserName)
 	if err != nil {
-		return
+		return res, err
 	}
 	if user.ID == 0 {
 		err = errors.New("用户不存在")
-		return
+		return res, err
 	}
 	if !user.CheckPassword(req.Password) {
 		err = errors.New("密码错误")
 		res.Code = e.Success
-		return
+		return res, err
 	}
 
 	res.UserDetail = BuildUser(user)
-	return
+	return res, nil
 }
 
 // UserRegister 注册模块
@@ -66,14 +67,12 @@ func (u *UserSrv) UserRegister(ctx context.Context, req *pb.UserReq) (*pb.UserRe
 	}
 
 	user := &model.User{
-		Username: req.UserName,
+		UserName: req.UserName,
 	}
-	if err := userByName.SetPassword(userByName.Password); err != nil {
+	if err := user.SetPassword(req.Password); err != nil {
 		res.Code = e.Error
 		return res, err
 	}
-	user.Password = userByName.Password
-
 	if err := dao.NewUserDao(ctx).UserRegister(user); err != nil {
 		res.Code = e.Error
 		return res, err
@@ -82,7 +81,8 @@ func (u *UserSrv) UserRegister(ctx context.Context, req *pb.UserReq) (*pb.UserRe
 }
 
 // GetAllUser 获取所有的user账户信息
-func (u *UserSrv) GetAllUser(ctx context.Context, req *pb.UserReq) (res *pb.UserRes, err error) {
+func (u *UserSrv) GetAllUser(ctx context.Context, req *pb.UserReq) (*pb.UserRes, error) {
+	res := &pb.UserRes{}
 	res.Code = e.Success
 	userList, _ := dao.NewUserDao(ctx).GetAllUser()
 	userModels := make([]*pb.UserModel, 0, len(userList))
@@ -90,13 +90,13 @@ func (u *UserSrv) GetAllUser(ctx context.Context, req *pb.UserReq) (res *pb.User
 		userModels = append(userModels, BuildUser(user))
 	}
 	res.UserList = userModels
-	return
+	return res, nil
 }
 
 func BuildUser(u *model.User) *pb.UserModel {
 	return &pb.UserModel{
 		Id:        uint32(u.ID),
-		UserName:  u.Username,
+		UserName:  u.UserName,
 		CreatedAt: u.CreatedAt.Unix(),
 	}
 }

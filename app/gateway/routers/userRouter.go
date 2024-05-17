@@ -7,7 +7,9 @@ import (
 
 func UserRouter(router *gin.Engine) {
 	userController := &controllers.UserController{}
+	router.POST("/user/login", userController.Login)
 	r := router.Group("user")
-	r.POST("", func(c *gin.Context) {})
+	r.Use(AuthMiddleware())
 	r.POST("/register", userController.RegisterUser)
+	r.POST("/getAllUsers", userController.GetAllUsers)
 }
