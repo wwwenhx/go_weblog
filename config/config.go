@@ -6,19 +6,20 @@ import (
 )
 
 var (
-	Db                 string
-	DbHost             string
-	DbPort             string
-	DbUser             string
-	DbPassword         string
-	DbName             string
-	Charset            string
-	EtcdHost           string
-	EtcdPort           string
-	UserServiceAddress string
-	TaskServiceAddress string
-	GatewayAddress     string
-	MqAddress          string
+	Db                   string
+	DbHost               string
+	DbPort               string
+	DbUser               string
+	DbPassword           string
+	DbName               string
+	Charset              string
+	EtcdHost             string
+	EtcdPort             string
+	UserServiceAddress   string
+	WeblogServiceAddress string
+	GatewayAddress       string
+	MqAddress            string
+	MsgServiceAddress    string
 )
 
 func Init() {
@@ -49,8 +50,9 @@ func LoadEtcdData(file *ini.File) {
 
 func LoadServiceAddr(file *ini.File) {
 	UserServiceAddress = file.Section("server").Key("UserServiceAddress").String()
-	TaskServiceAddress = file.Section("server").Key("TaskServiceAddress").String()
+	WeblogServiceAddress = file.Section("server").Key("WeblogServiceAddress").String()
 	GatewayAddress = file.Section("server").Key("GatewayAddress").String()
+	MsgServiceAddress = file.Section("server").Key("MsgServiceAddress").String()
 }
 
 func LoadMqAddr(file *ini.File) {

@@ -10,10 +10,10 @@ type Response struct {
 	Message string      `json:"message"`
 }
 
-func (r *Response) ResponseSuccess(data interface{}) *Response {
+func (r *Response) ResponseSuccess(data interface{}, msg string) *Response {
 	r.Code = e.Success
 	r.Data = data
-	r.Message = "Success"
+	r.Message = msg
 	return r
 }
 

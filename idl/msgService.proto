@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+option go_package = "./pb";
+
+message MsgModel {
+  // @inject_tah: json:"id" form:"id"
+  uint32 id = 1;
+  // @inject_tah: json:"user_id" form:"user_id"
+  uint32 user_id = 2;
+  // @inject_tah: json:"created_at" form:"created_at"
+  int64 created_at = 3;
+  // @inject_tah: json:"updated_at" form:"updated_at"
+  int64 updated_at = 4;
+  // @inject_tah: json:"delete_at" form:"delete_at"
+  int64 delete_at = 5;
+  // @inject_tah: json:"from" form:"from"
+  string from = 6;
+  // @inject_tah: json:"body" form:"body"
+  string body = 7;
+}
+
+message msgReq {
+  // @inject_tah: json:"id" form:"id"
+  uint32 id = 1;
+  // @inject_tah: json:"user_id" form:"user_id"
+  uint32 user_id = 2;
+  // @inject_tah: json:"body" form:"body"
+  string body = 3;
+}
+
+message msgRes {
+  // @inject_tah: json:"code" form:"code"
+  uint32 code = 1;
+  // @inject_tah: json:"msg_list" form:"msg_list"
+  repeated MsgModel msg_list = 2;
+  // @inject_tah: json:"msg" form:"msg"
+  MsgModel msg = 3;
+}
+
+service Msg {
+  rpc GetMsg(msgReq)returns(msgRes);
+}

@@ -51,6 +51,23 @@ func (u *UserSrv) UserLogin(ctx context.Context, req *pb.UserReq) (*pb.UserRes, 
 	return res, nil
 }
 
+// CheckPassword 密码验证
+func (u *UserSrv) CheckPassword(ctx context.Context, req *pb.UserReq) (*pb.UserRes, error) {
+	fmt.Println(req.Id)
+	res := &pb.UserRes{}
+	res.Code = e.Success
+	user, err := dao.NewUserDao(ctx).FindUserById(req.Id)
+	fmt.Println(user)
+	if err != nil {
+		return res, err
+	}
+	if !user.CheckPassword(req.Password) {
+		res.Code = e.Error
+		return res, errors.New("密码校验失败")
+	}
+	return res, nil
+}
+
 // UserRegister 注册模块
 func (u *UserSrv) UserRegister(ctx context.Context, req *pb.UserReq) (*pb.UserRes, error) {
 	fmt.Println("enter UserRegister...")
@@ -93,24 +110,15 @@ func (u *UserSrv) GetAllUser(ctx context.Context, req *pb.UserReq) (*pb.UserRes,
 	return res, nil
 }
 
+// 修改密码
 func (u *UserSrv) ChangePassword(ctx context.Context, req *pb.UserReq) (*pb.UserRes, error) {
 	res := &pb.UserRes{}
 	res.Code = e.Success
-	user, err := dao.NewUserDao(ctx).FindUserById(req.Id)
-	if err != nil {
-		return res, err
-	}
-	if !user.CheckPassword(req.Password) {
-		res.Code = e.Error
-		return res, errors.New("验证密码错误")
-	}
 	result := dao.NewUserDao(ctx).ChangePassword(req.Id, req.Password)
 	if result.Error != nil {
 		res.Code = e.Error
 		return res, errors.New("更新失败")
 	}
-	user.Password = req.Password
-	res.UserDetail = BuildUser(user)
 	return res, nil
 }
 

@@ -12,4 +12,6 @@ func UserRouter(router *gin.Engine) {
 	r.Use(AuthMiddleware())
 	r.POST("/register", userController.RegisterUser)
 	r.POST("/getAllUsers", userController.GetAllUsers)
+	r.POST("/updatePassword", userController.UpdatePassword)
+	r.POST("/checkPassword", userController.CheckPassword)
 }

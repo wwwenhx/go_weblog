@@ -17,6 +17,14 @@ type MessageConsumer struct {
 
 func ConsumeUser() error {
 	mq := NewUserMq()
+	if mq.conn == nil {
+		fmt.Println("conn is nil")
+		return errors.New("conn is nil")
+	}
+	if mq.ch == nil {
+		fmt.Println("ch is nil")
+		return errors.New("ch is nil")
+	}
 	msgs, err := mq.ch.Consume(
 		"userChannel",
 		"",
@@ -38,6 +46,7 @@ func ConsumeUser() error {
 			}
 		}
 	}()
+	fmt.Println("consume user success")
 	return nil
 }
 

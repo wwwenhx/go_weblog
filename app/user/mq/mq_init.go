@@ -28,11 +28,10 @@ func InitMq() (err error) {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
-func NewMQ() (connection *amqp.Connection, channel *amqp.Channel) {
-	connection = conn
-	channel = ch
-	return connection, channel
+func NewMQ() (*amqp.Connection, *amqp.Channel) {
+	return conn, ch
 }
