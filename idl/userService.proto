@@ -34,10 +34,7 @@ message UserRes {
 }
 
 service User{
-  rpc UserLogin(UserReq)returns(UserRes);
-  rpc UserRegister(UserReq)returns(UserRes);
-  rpc GetAllUser(UserReq)returns(UserRes);
-  rpc ChangePassword(UserReq)returns(UserRes);
-  rpc ChangeName(UserReq)returns(UserRes);
-  rpc CheckPassword(UserReq)returns(UserRes);
+
 }
+
+

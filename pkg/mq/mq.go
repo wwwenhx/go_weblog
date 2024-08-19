@@ -6,13 +6,13 @@ import (
 )
 
 type MQ struct {
-	conn    *amqp.Connection
-	ch      *amqp.Channel
-	replyTo string
-	msgs    <-chan amqp.Delivery
+	Conn    *amqp.Connection
+	Ch      *amqp.Channel
+	ReplyTo string
+	Msgs    <-chan amqp.Delivery
 }
 
-func NewUserMq() *MQ {
+func NewMq() *MQ {
 	conn, ch := NewMQ()
 	if conn == nil {
 		fmt.Println("conn is nil")
@@ -21,14 +21,14 @@ func NewUserMq() *MQ {
 		fmt.Println("ch is nil")
 	}
 	mq := &MQ{
-		conn: conn,
-		ch:   ch,
+		Conn: conn,
+		Ch:   ch,
 	}
 	return mq
 }
 
 func (mq *MQ) Publish(queueName string, body []byte) error {
-	_, err := mq.ch.QueueDeclare(
+	_, err := mq.Ch.QueueDeclare(
 		queueName,
 		false,
 		false,
@@ -40,7 +40,7 @@ func (mq *MQ) Publish(queueName string, body []byte) error {
 		return err
 	}
 
-	err = mq.ch.Publish(
+	err = mq.Ch.Publish(
 		"",
 		queueName,
 		false,
@@ -57,7 +57,7 @@ func (mq *MQ) Publish(queueName string, body []byte) error {
 }
 
 func (mq *MQ) SyncPublish(queueName string, body []byte) error {
-	_, err := mq.ch.QueueDeclare(
+	_, err := mq.Ch.QueueDeclare(
 		queueName,
 		false,
 		false,
@@ -69,7 +69,7 @@ func (mq *MQ) SyncPublish(queueName string, body []byte) error {
 		return err
 	}
 
-	err = mq.ch.Publish(
+	err = mq.Ch.Publish(
 		"",
 		queueName,
 		false,

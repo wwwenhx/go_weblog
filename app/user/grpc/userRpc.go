@@ -2,12 +2,12 @@ package grpc
 
 import (
 	"fmt"
-	"gin_gomicro/app/user/service"
 	"gin_gomicro/config"
 	"gin_gomicro/idl/pb"
-	"google.golang.org/grpc"
 	"log"
 	"net"
+
+	"google.golang.org/grpc"
 )
 
 type UserRpc struct {
@@ -16,8 +16,6 @@ type UserRpc struct {
 func GrpcInit() {
 	//创建grpc服务器
 	grpcServer := grpc.NewServer()
-	//注册userService结构体
-	pb.RegisterUserServer(grpcServer, service.GetUserSrv())
 	//启动grpc服务器
 	lis, err := net.Listen("tcp", config.UserServiceAddress)
 	if err != nil {

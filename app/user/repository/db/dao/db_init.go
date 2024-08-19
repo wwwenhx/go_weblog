@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gin_gomicro/config"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -50,7 +51,6 @@ func Database(connString string) error {
 		fmt.Println(err)
 	}
 	DB = db
-	migration()
 	return err
 }
 

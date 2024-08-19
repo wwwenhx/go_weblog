@@ -14,9 +14,11 @@ message MsgModel {
   // @inject_tah: json:"delete_at" form:"delete_at"
   int64 delete_at = 5;
   // @inject_tah: json:"from" form:"from"
-  string from = 6;
+  uint32 from = 6;
   // @inject_tah: json:"body" form:"body"
   string body = 7;
+  // @inject_tah: json:"to" form:"to"
+  uint32 to = 8;
 }
 
 message msgReq {
@@ -26,6 +28,10 @@ message msgReq {
   uint32 user_id = 2;
   // @inject_tah: json:"body" form:"body"
   string body = 3;
+  // @inject_tah: json:"from" form:"from"
+  uint32 from = 4;
+  // @inject_tah: json:"to" form:"to"
+  uint32 to = 5;
 }
 
 message msgRes {
@@ -39,4 +45,5 @@ message msgRes {
 
 service Msg {
   rpc GetMsg(msgReq)returns(msgRes);
+  rpc SendMsg(msgReq)returns(msgRes);
 }

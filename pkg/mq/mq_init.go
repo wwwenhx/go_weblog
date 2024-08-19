@@ -1,24 +1,26 @@
 package mq
 
 import (
+	"fmt"
 	"gin_gomicro/config"
 	"github.com/streadway/amqp"
 )
 
-var conn *amqp.Connection
-var ch *amqp.Channel
+var Conn *amqp.Connection
+var Ch *amqp.Channel
 
-func InitMq() (err error) {
-	conn, err = amqp.Dial(config.MqAddress)
+func InitMq(ChannelName string) (err error) {
+	fmt.Println(config.MqAddress)
+	Conn, err = amqp.Dial(config.MqAddress)
 	if err != nil {
 		return err
 	}
-	ch, err = conn.Channel()
+	Ch, err = Conn.Channel()
 	if err != nil {
 		return err
 	}
-	_, err = ch.QueueDeclare(
-		"userChannel",
+	_, err = Ch.QueueDeclare(
+		ChannelName,
 		false,
 		false,
 		false,
@@ -33,5 +35,5 @@ func InitMq() (err error) {
 }
 
 func NewMQ() (*amqp.Connection, *amqp.Channel) {
-	return conn, ch
+	return Conn, Ch
 }

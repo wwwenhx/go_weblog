@@ -20,7 +20,12 @@ func GetMsgSrv() *MsgSrv {
 	return MsgIns
 }
 
-func (s *MsgSrv) GetMsg(ctx context.Context, req *pb.MsgReq) (*pb.MsgRes, error) {
+func (m *MsgSrv) GetMsg(ctx context.Context, req *pb.MsgReq) (*pb.MsgRes, error) {
+	res := &pb.MsgRes{}
+	return res, nil
+}
+
+func (m *MsgSrv) SendMsg(ctx context.Context, req *pb.MsgReq) (*pb.MsgRes, error) {
 	res := &pb.MsgRes{}
 	return res, nil
 }
